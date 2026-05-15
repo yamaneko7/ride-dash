@@ -200,6 +200,10 @@
     color: #fff;
     text-shadow: none;
     margin-bottom: 0;
+    line-height: 1.1;
+  }
+  .compass-panel .sub-value.long {
+    font-size: 2.4rem;
   }
   .compass-bottom {
     display: flex;
@@ -455,9 +459,11 @@ if (!navigator.geolocation) {
 
       // 方位
       if (heading != null && !isNaN(heading)) {
-        document.getElementById('headingDir').textContent = degToCompass(heading);
-        document.getElementById('headingDeg').textContent = Math.round(heading) + '°';
-        document.getElementById('needleSvg').style.transform = `rotate(${heading}deg)`;
+        const dirEl = document.getElementById('headingDir');
+  dirEl.textContent = degToCompass(heading);
+  dirEl.classList.toggle('long', degToCompass(heading).length >= 3);
+  document.getElementById('headingDeg').textContent = Math.round(heading) + '°';
+  document.getElementById('needleSvg').style.transform = `rotate(${heading}deg)`;
       }
 
       // 精度表示
@@ -519,7 +525,10 @@ function handleOrientation(e) {
   if (deg == null) return;
   deg = (deg + 360) % 360;
 
-  document.getElementById('headingDir').textContent = degToCompass(deg);
+  const dir = degToCompass(deg);
+  const dirEl2 = document.getElementById('headingDir');
+  dirEl2.textContent = dir;
+  dirEl2.classList.toggle('long', dir.length >= 3);
   document.getElementById('headingDeg').textContent = Math.round(deg) + '°';
   document.getElementById('needleSvg').style.transform = `rotate(${deg}deg)`;
 }
