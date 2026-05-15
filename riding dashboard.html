@@ -13,7 +13,6 @@
     --border: #1e2830;
     --accent: #00d4ff;
     --accent2: #ff6b00;
-    --warn: #ffcc00;
     --text: #c8d8e8;
     --dim: #4a6070;
     --glow: 0 0 12px rgba(0,212,255,0.4);
@@ -35,9 +34,9 @@
   body {
     display: flex;
     flex-direction: column;
-    padding: 8px 10px;
-    gap: 7px;
-    min-height: 100dvh;
+    padding: 10px 12px;
+    gap: 0;
+    height: 100dvh;
   }
 
   /* ヘッダー */
@@ -45,7 +44,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 4px;
+    padding: 4px 4px 8px;
+    flex: 0 0 auto;
   }
   .brand {
     font-family: 'Rajdhani', sans-serif;
@@ -82,53 +82,14 @@
   }
   .status-label.active { color: #00ff88; }
 
-  /* 速度メインパネル */
-  .speed-panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 10px 16px 10px;
-    position: relative;
-    overflow: hidden;
-    flex: 0 0 auto;
-  }
-  .speed-panel::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  }
-  .speed-label {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 2rem;
-    letter-spacing: 0.3em;
-    color: var(--accent);
-    margin-bottom: 4px;
-  }
-  .speed-value {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 8rem;
-    font-weight: 700;
-    line-height: 1;
-    color: #fff;
-    text-shadow: 0 0 30px rgba(0,212,255,0.3);
-    letter-spacing: -0.02em;
-  }
-  .speed-unit {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 1.2rem;
-    color: var(--dim);
-    letter-spacing: 0.2em;
-    margin-top: -4px;
-  }
-  /* スピードバー */
+  /* 速度バー（細いラインのみ） */
   .speed-bar-wrap {
-    margin-top: 12px;
-    height: 4px;
+    height: 3px;
     background: var(--border);
     border-radius: 2px;
     overflow: hidden;
+    flex: 0 0 auto;
+    margin-bottom: 8px;
   }
   .speed-bar {
     height: 100%;
@@ -139,129 +100,55 @@
     box-shadow: var(--glow);
   }
 
-  /* サブパネルグリッド */
-  .sub-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    flex: 0 0 auto;
-  }
-
-  .sub-panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 14px 14px 14px;
-    position: relative;
-    overflow: hidden;
-  }
-  .sub-panel::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
-  }
-
-  .sub-label {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 1.7rem;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    margin-bottom: 4px;
-  }
-  .sub-value {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 5rem;
-    font-weight: 700;
-    line-height: 1;
-    color: #fff;
-  }
-  .sub-unit {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--dim);
-    margin-top: 2px;
-    letter-spacing: 0.15em;
-  }
-
-  /* 高度パネルアクセント */
-  .alt-panel .sub-panel-accent {
-    position: absolute;
-    top: 0; right: 0;
-    width: 60px; height: 60px;
-    background: radial-gradient(circle at top right, rgba(255,107,0,0.08), transparent 70%);
-  }
-  .alt-panel .sub-value { color: var(--accent2); text-shadow: var(--glow2); }
-
-  /* 方位コンパス */
-  .compass-panel .sub-value {
-    font-size: 2.4rem;
-    color: #fff;
-    text-shadow: none;
-    margin-bottom: 0;
-    line-height: 1.1;
-  }
-  .compass-bottom {
+  /* 3パネル */
+  .panels {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 4px;
-  }
-  .compass-needle {
-    width: 32px; height: 32px;
-    flex-shrink: 0;
-  }
-  .compass-needle svg {
-    width: 100%; height: 100%;
-    transition: transform 0.4s ease;
-  }
-  .compass-deg {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: 0.05em;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-height: 0;
   }
 
-  /* 現在地パネル */
-  .location-panel {
+  .panel {
     background: var(--panel);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 14px 16px;
-    flex: 0 0 auto;
+    border-radius: 16px;
+    padding: 16px 20px;
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: 80px;
     position: relative;
     overflow: hidden;
+    min-height: 0;
   }
-  .location-panel::before {
+  .panel::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.2), transparent);
   }
-  .loc-label {
+
+  .panel-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 1.7rem;
-    letter-spacing: 0.2em;
+    font-size: 1.4rem;
+    letter-spacing: 0.25em;
     color: var(--accent);
-    margin-bottom: 4px;
+    margin-bottom: 8px;
+    line-height: 1;
   }
+
+  /* 現在地 */
   .loc-value {
-    font-size: 1.9rem;
+    font-size: 2.2rem;
     font-weight: 700;
     color: #fff;
-    line-height: 1.3;
-    word-break: break-all;
+    line-height: 1.25;
   }
   .loc-loading {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     color: var(--dim);
     animation: blink 1.2s infinite;
   }
@@ -269,35 +156,95 @@
     0%,100%{opacity:1} 50%{opacity:0.2}
   }
 
-  /* エラー表示 */
-  .error-msg {
+  /* 高度 */
+  .alt-panel::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle at top right, rgba(255,107,0,0.07), transparent 70%);
+  }
+  .alt-value {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent2);
+    text-shadow: var(--glow2);
+    letter-spacing: -0.02em;
+  }
+  .alt-unit {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.7rem;
-    color: #ff4466;
-    text-align: center;
-    padding: 4px 0;
-    display: none;
+    font-size: 0.9rem;
+    color: var(--dim);
+    margin-top: 4px;
+    letter-spacing: 0.2em;
   }
 
-  /* 時刻フッター */
+  /* 方角 */
+  .heading-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .heading-dir {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+  }
+  .heading-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .heading-deg {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+  .compass-needle {
+    width: 36px; height: 36px;
+    flex-shrink: 0;
+  }
+  .compass-needle svg {
+    width: 100%; height: 100%;
+    transition: transform 0.4s ease;
+  }
+
+  /* フッター */
   .footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 4px;
+    padding: 8px 4px 4px;
     flex: 0 0 auto;
   }
   .clock {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     color: var(--dim);
     letter-spacing: 0.15em;
   }
   .acc-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     color: var(--dim);
     letter-spacing: 0.1em;
+  }
+
+  /* エラー */
+  .error-msg {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: #ff4466;
+    text-align: center;
+    padding: 2px 0;
+    display: none;
+    flex: 0 0 auto;
   }
 </style>
 </head>
@@ -311,44 +258,43 @@
   </div>
 </div>
 
-<div class="speed-panel">
-  <div class="speed-label">SPEED</div>
-  <div class="speed-value" id="speedVal">--</div>
-  <div class="speed-unit">km/h</div>
-  <div class="speed-bar-wrap">
-    <div class="speed-bar" id="speedBar"></div>
-  </div>
+<div class="speed-bar-wrap">
+  <div class="speed-bar" id="speedBar"></div>
 </div>
 
-<div class="sub-grid">
-  <div class="sub-panel alt-panel">
-    <div class="sub-panel-accent"></div>
-    <div class="sub-label">ALTITUDE</div>
-    <div class="sub-value" id="altVal">--</div>
-    <div class="sub-unit">meters</div>
-  </div>
-  <div class="sub-panel compass-panel">
-    <div class="sub-label">HEADING</div>
-    <div class="sub-value" id="headingDir">--</div>
-    <div class="compass-bottom">
-      <div class="compass-needle">
-        <svg id="needleSvg" viewBox="0 0 28 28">
-          <circle cx="14" cy="14" r="13" fill="none" stroke="#1e2830" stroke-width="1.5"/>
-          <polygon points="14,3 17,14 14,12 11,14" fill="#ff4444"/>
-          <polygon points="14,25 17,14 14,16 11,14" fill="#4a6070"/>
-          <circle cx="14" cy="14" r="2" fill="#fff"/>
-        </svg>
-      </div>
-      <div class="compass-deg" id="headingDeg">---°</div>
+<div class="panels">
+
+  <div class="panel loc-panel">
+    <div class="panel-label">LOCATION</div>
+    <div class="loc-value" id="locVal">
+      <span class="loc-loading">取得中...</span>
     </div>
   </div>
-</div>
 
-<div class="location-panel">
-  <div class="loc-label">LOCATION</div>
-  <div class="loc-value" id="locVal">
-    <span class="loc-loading">取得中...</span>
+  <div class="panel alt-panel">
+    <div class="panel-label">ALTITUDE</div>
+    <div class="alt-value" id="altVal">--</div>
+    <div class="alt-unit">meters</div>
   </div>
+
+  <div class="panel heading-panel">
+    <div class="panel-label">HEADING</div>
+    <div class="heading-row">
+      <div class="heading-dir" id="headingDir">--</div>
+      <div class="heading-right">
+        <div class="compass-needle">
+          <svg id="needleSvg" viewBox="0 0 28 28">
+            <circle cx="14" cy="14" r="13" fill="none" stroke="#1e2830" stroke-width="1.5"/>
+            <polygon points="14,3 17,14 14,12 11,14" fill="#ff4444"/>
+            <polygon points="14,25 17,14 14,16 11,14" fill="#4a6070"/>
+            <circle cx="14" cy="14" r="2" fill="#fff"/>
+          </svg>
+        </div>
+        <div class="heading-deg" id="headingDeg">---°</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <div class="error-msg" id="errMsg"></div>
@@ -359,7 +305,6 @@
 </div>
 
 <script>
-// ===== 時刻 =====
 function updateClock() {
   const now = new Date();
   document.getElementById('clock').textContent =
@@ -368,30 +313,22 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// ===== 方位変換 =====
 function degToCompass(deg) {
   const dirs = ['北','北北東','北東','東北東','東','東南東','南東','南南東','南','南南西','南西','西南西','西','西北西','北西','北北西'];
   return dirs[Math.round(deg / 22.5) % 16];
 }
 
-// ===== リバースジオコーディング =====
 let lastGeocode = 0;
-let lastLat = null, lastLon = null;
 
 async function reverseGeocode(lat, lon) {
-  // 前回から50m以上動いていないかつ30秒以内なら再取得しない（簡易間引き）
   const now = Date.now();
   if (now - lastGeocode < 15000) return;
   lastGeocode = now;
-  lastLat = lat; lastLon = lon;
-
   try {
     const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=ja&zoom=13`;
     const res = await fetch(url, { headers: { 'Accept-Language': 'ja' } });
     const data = await res.json();
     const addr = data.address || {};
-
-    // 市区町村レベルまで（番地・丁目は除外）
     const parts = [];
     if (addr.country_code === 'jp') {
       if (addr.state)        parts.push(addr.state);
@@ -399,15 +336,11 @@ async function reverseGeocode(lat, lon) {
       if (addr.city)         parts.push(addr.city);
       else if (addr.town)    parts.push(addr.town);
       else if (addr.village) parts.push(addr.village);
-      if (addr.suburb || addr.neighbourhood) {
-        parts.push(addr.suburb || addr.neighbourhood);
-      }
+      if (addr.suburb || addr.neighbourhood) parts.push(addr.suburb || addr.neighbourhood);
     } else {
-      // 海外フォールバック
       if (addr.state) parts.push(addr.state);
       if (addr.city || addr.town || addr.village) parts.push(addr.city || addr.town || addr.village);
     }
-
     const locEl = document.getElementById('locVal');
     if (parts.length > 0) {
       locEl.innerHTML = parts.join('<br>');
@@ -415,12 +348,10 @@ async function reverseGeocode(lat, lon) {
       locEl.textContent = data.display_name?.split(',').slice(0,3).join(' ') || '取得できませんでした';
     }
   } catch(e) {
-    // ネットワークエラー時は座標を表示
     document.getElementById('locVal').textContent = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
   }
 }
 
-// ===== GPS =====
 const gpsDot   = document.getElementById('gpsDot');
 const gpsLabel = document.getElementById('gpsLabel');
 const errMsg   = document.getElementById('errMsg');
@@ -436,64 +367,40 @@ if (!navigator.geolocation) {
   navigator.geolocation.watchPosition(
     (pos) => {
       const { latitude, longitude, altitude, speed, heading, accuracy } = pos.coords;
-
-      // GPS状態
       gpsDot.classList.add('active');
       gpsLabel.classList.add('active');
       gpsLabel.textContent = 'GPS ON';
       errMsg.style.display = 'none';
 
-      // 速度 (m/s → km/h)
       const speedKmh = speed != null ? Math.round(speed * 3.6) : 0;
-      document.getElementById('speedVal').textContent = speedKmh;
-      // バー（最大160km/hを100%）
-      const barPct = Math.min(speedKmh / 160 * 100, 100);
-      document.getElementById('speedBar').style.width = barPct + '%';
+      document.getElementById('speedBar').style.width = Math.min(speedKmh / 160 * 100, 100) + '%';
 
-      // 高度
-      document.getElementById('altVal').textContent =
-        altitude != null ? Math.round(altitude) : '--';
+      document.getElementById('altVal').textContent = altitude != null ? Math.round(altitude) : '--';
 
-      // 方位
       if (heading != null && !isNaN(heading)) {
-        const dirEl = document.getElementById('headingDir');
-  dirEl.textContent = degToCompass(heading);
-  document.getElementById('headingDeg').textContent = Math.round(heading) + '°';
-  document.getElementById('needleSvg').style.transform = `rotate(${heading}deg)`;
+        document.getElementById('headingDir').textContent = degToCompass(heading);
+        document.getElementById('headingDeg').textContent = Math.round(heading) + '°';
+        document.getElementById('needleSvg').style.transform = `rotate(${heading}deg)`;
       }
 
-      // 精度表示
       document.getElementById('accLabel').textContent = accuracy ? `±${Math.round(accuracy)}m` : '';
-
-      // 住所（間引き取得）
       reverseGeocode(latitude, longitude);
     },
     (err) => {
       gpsDot.classList.remove('active');
       gpsLabel.classList.remove('active');
       gpsLabel.textContent = 'GPS ERR';
-      const msgs = {
-        1: '位置情報の許可が必要です',
-        2: '位置情報を取得できません',
-        3: '位置情報の取得がタイムアウトしました'
-      };
+      const msgs = { 1: '位置情報の許可が必要です', 2: '位置情報を取得できません', 3: 'タイムアウト' };
       showError(msgs[err.code] || '位置情報エラー');
       document.getElementById('locVal').innerHTML = '<span class="loc-loading">許可待ち...</span>';
     },
-    {
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 2000
-    }
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 2000 }
   );
 }
 
-// ===== デバイスコンパス（スマホ）=====
-// iOSは許可が必要
 function startCompass() {
   if (typeof DeviceOrientationEvent !== 'undefined' &&
       typeof DeviceOrientationEvent.requestPermission === 'function') {
-    // iOS13+
     document.addEventListener('click', async () => {
       try {
         const perm = await DeviceOrientationEvent.requestPermission();
@@ -511,19 +418,15 @@ function listenOrientation() {
 }
 
 function handleOrientation(e) {
-  // GPSのheadingが使えている場合はスキップ
   let deg = null;
   if (e.absolute && e.alpha != null) {
-    deg = 360 - e.alpha; // deviceorientationabsolute
+    deg = 360 - e.alpha;
   } else if (e.webkitCompassHeading != null) {
-    deg = e.webkitCompassHeading; // Safari
+    deg = e.webkitCompassHeading;
   }
   if (deg == null) return;
   deg = (deg + 360) % 360;
-
-  const dir = degToCompass(deg);
-  const dirEl2 = document.getElementById('headingDir');
-  dirEl2.textContent = dir;
+  document.getElementById('headingDir').textContent = degToCompass(deg);
   document.getElementById('headingDeg').textContent = Math.round(deg) + '°';
   document.getElementById('needleSvg').style.transform = `rotate(${deg}deg)`;
 }
