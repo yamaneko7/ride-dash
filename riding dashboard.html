@@ -82,22 +82,68 @@
   }
   .status-label.active { color: #00ff88; }
 
-  /* 速度バー（細いラインのみ） */
+  /* 速度バー */
   .speed-bar-wrap {
-    height: 3px;
+    height: 12px;
     background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
+    border-radius: 6px;
+    overflow: visible;
     flex: 0 0 auto;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
+    position: relative;
   }
   .speed-bar {
     height: 100%;
     width: 0%;
     background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 2px;
+    border-radius: 6px;
     transition: width 0.5s ease;
     box-shadow: var(--glow);
+    position: relative;
+    z-index: 1;
+  }
+  /* 目盛り */
+  .speed-ticks {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .speed-tick {
+    width: 1px;
+    height: 100%;
+    background: rgba(0,0,0,0.35);
+  }
+  .speed-tick:first-child,
+  .speed-tick:last-child {
+    background: transparent;
+  }
+  /* 目盛りラベル */
+  .speed-tick-labels {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0;
+    margin-bottom: 8px;
+  }
+  .speed-tick-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.5rem;
+    color: var(--accent);
+    letter-spacing: 0;
+    text-align: center;
+    width: 0;
+    white-space: nowrap;
+    transform: translateX(-50%);
+  }
+  .speed-tick-label:first-child {
+    transform: none;
+  }
+  .speed-tick-label:last-child {
+    transform: translateX(-100%);
   }
 
   /* 3パネル */
@@ -113,7 +159,7 @@
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 16px 20px;
+    padding: 12px 20px;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -260,6 +306,36 @@
 
 <div class="speed-bar-wrap">
   <div class="speed-bar" id="speedBar"></div>
+  <div class="speed-ticks">
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+  </div>
+</div>
+<div class="speed-tick-labels">
+  <span class="speed-tick-label">0</span>
+  <span class="speed-tick-label">10</span>
+  <span class="speed-tick-label">20</span>
+  <span class="speed-tick-label">30</span>
+  <span class="speed-tick-label">40</span>
+  <span class="speed-tick-label">50</span>
+  <span class="speed-tick-label">60</span>
+  <span class="speed-tick-label">70</span>
+  <span class="speed-tick-label">80</span>
+  <span class="speed-tick-label">90</span>
+  <span class="speed-tick-label">100</span>
+  <span class="speed-tick-label">110</span>
+  <span class="speed-tick-label">120</span>
 </div>
 
 <div class="panels">
@@ -373,7 +449,7 @@ if (!navigator.geolocation) {
       errMsg.style.display = 'none';
 
       const speedKmh = speed != null ? Math.round(speed * 3.6) : 0;
-      document.getElementById('speedBar').style.width = Math.min(speedKmh / 160 * 100, 100) + '%';
+      document.getElementById('speedBar').style.width = Math.min(speedKmh / 120 * 100, 100) + '%';
 
       document.getElementById('altVal').textContent = altitude != null ? Math.round(altitude) : '--';
 
