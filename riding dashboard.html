@@ -231,53 +231,17 @@
     letter-spacing: 0.2em;
   }
 
-  /* 方角スクロール */
-  .heading-tape-wrap {
-    overflow: hidden;
-    width: 100%;
-    position: relative;
-    margin-bottom: 8px;
-  }
-  .heading-tape-wrap::before,
-  .heading-tape-wrap::after {
-    content: '';
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 35%;
-    z-index: 2;
-    pointer-events: none;
-  }
-  .heading-tape-wrap::before {
-    left: 0;
-    background: linear-gradient(90deg, var(--panel), transparent);
-  }
-  .heading-tape-wrap::after {
-    right: 0;
-    background: linear-gradient(270deg, var(--panel), transparent);
-  }
-  .heading-tape {
+  /* 方角 */
+  .heading-row {
     display: flex;
     align-items: center;
     gap: 16px;
-    transition: transform 0.3s ease;
-    will-change: transform;
   }
-  .heading-tape-item {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: rgba(255,255,255,0.15);
-    white-space: nowrap;
-    transition: color 0.3s, transform 0.3s, font-size 0.3s;
-    flex-shrink: 0;
-  }
-  .heading-tape-item.near {
-    color: rgba(255,255,255,0.4);
-    font-size: 1.8rem;
-  }
-  .heading-tape-item.active {
-    color: #fff;
+  .heading-dir {
     font-size: 2.4rem;
-    transform: scale(1.05);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
   }
   .heading-deg {
     font-family: 'Rajdhani', sans-serif;
@@ -286,8 +250,6 @@
     color: #fff;
     letter-spacing: 0.05em;
     line-height: 1;
-    text-align: center;
-    width: 100%;
   }
 
   /* フッター */
@@ -384,12 +346,10 @@
 
   <div class="panel heading-panel">
     <div class="panel-label">HEADING</div>
-    <div class="heading-tape-wrap">
-      <div class="heading-tape" id="headingTape">
-        <!-- JSで生成 -->
-      </div>
+    <div class="heading-row">
+      <div class="heading-dir" id="headingDir">--</div>
+      <div class="heading-deg" id="headingDeg">---°</div>
     </div>
-    <div class="heading-deg" id="headingDeg">---°</div>
   </div>
 
 </div>
@@ -410,57 +370,10 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// ===== 方角テープ初期化 =====
-const dirs = ['北','北北東','北東','東北東','東','東南東','南東','南南東','南','南南西','南西','西南西','西','西北西','北西','北北西'];
-
 function degToCompass(deg) {
+  const dirs = ['北','北北東','北東','東北東','東','東南東','南東','南南東','南','南南西','南西','西南西','西','西北西','北西','北北西'];
   return dirs[Math.round(deg / 22.5) % 16];
 }
-
-// テープを3周分生成（ループ対応）
-const tape = document.getElementById('headingTape');
-const REPEAT = 3;
-for (let r = 0; r < REPEAT; r++) {
-  dirs.forEach((d, i) => {
-    const span = document.createElement('span');
-    span.className = 'heading-tape-item';
-    span.dataset.index = i;
-    span.dataset.repeat = r;
-    span.textContent = d;
-    tape.appendChild(span);
-  });
-}
-
-let currentDeg = 0;
-let itemWidth = 0;
-
-function updateTape(deg) {
-  currentDeg = deg;
-  const items = tape.querySelectorAll('.heading-tape-item');
-  if (!itemWidth && items[0]) {
-    itemWidth = items[0].offsetWidth + 16; // gap込み
-  }
-
-  const totalItems = dirs.length;
-  const idx = Math.round(deg / 22.5) % totalItems;
-  // 中央（REPEAT=3なので真ん中の周=1周目のidxを中心に）
-  const centerItem = totalItems + idx; // 2周目のidx
-  const offset = centerItem * itemWidth - (tape.parentElement.offsetWidth / 2) + (itemWidth / 2);
-
-  tape.style.transform = `translateX(${-offset}px)`;
-
-  items.forEach((item, i) => {
-    const itemIdx = i % totalItems;
-    const diff = Math.abs(itemIdx - idx);
-    const wrappedDiff = Math.min(diff, totalItems - diff);
-    item.classList.remove('active', 'near');
-    if (wrappedDiff === 0) item.classList.add('active');
-    else if (wrappedDiff === 1) item.classList.add('near');
-  });
-}
-
-// 初期表示
-updateTape(0);
 
 let lastGeocode = 0;
 
@@ -522,7 +435,7 @@ if (!navigator.geolocation) {
       document.getElementById('altVal').textContent = altitude != null ? Math.round(altitude) : '--';
 
       if (heading != null && !isNaN(heading)) {
-        updateTape(heading);
+        document.getElementById('headingDir').textContent = degToCompass(heading);
         document.getElementById('headingDeg').textContent = Math.round(heading) + '°';
       }
 
@@ -569,7 +482,7 @@ function handleOrientation(e) {
   }
   if (deg == null) return;
   deg = (deg + 360) % 360;
-  updateTape(deg);
+  document.getElementById('headingDir').textContent = degToCompass(deg);
   document.getElementById('headingDeg').textContent = Math.round(deg) + '°';
 }
 
