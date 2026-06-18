@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>RIDE DASH</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Share+Tech+Mono&family=Noto+Sans+JP:wght@400;700&display=swap');
+
+  :root {
+    --bg: #0a0c0f;
+    --panel: #0f1318;
+    --border: #1e2830;
+    --accent: #00d4ff;
+    --accent2: #ff6b00;
+    --text: #c8d8e8;
+    --dim: #4a6070;
+    --glow: 0 0 12px rgba(0,212,255,0.4);
+    --glow2: 0 0 12px rgba(255,107,0,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 12px;
+    gap: 0;
+    height: 100dvh;
+  }
+
+  /* ヘッダー */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 4px 8px;
+    flex: 0 0 auto;
+  }
+  .brand {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.25em;
+    text-shadow: var(--glow);
+  }
+  .status-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--dim);
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  .status-dot.active {
+    background: #00ff88;
+    box-shadow: 0 0 8px rgba(0,255,136,0.6);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; } 50% { opacity:0.5; }
+  }
+  .status-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+  }
+  .status-label.active { color: #00ff88; }
+
+  /* 速度バー */
+  .speed-bar-wrap {
+    height: 12px;
+    background: var(--border);
+    border-radius: 6px;
+    overflow: visible;
+    flex: 0 0 auto;
+    margin-bottom: 4px;
+    position: relative;
+  }
+  .speed-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 6px;
+    transition: width 0.5s ease;
+    box-shadow: var(--glow);
+    position: relative;
+    z-index: 1;
+  }
+  /* 目盛り */
+  .speed-ticks {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .speed-tick {
+    width: 1px;
+    height: 100%;
+    background: rgba(0,0,0,0.35);
+  }
+  .speed-tick:first-child,
+  .speed-tick:last-child {
+    background: transparent;
+  }
+  /* 目盛りラベル */
+  .speed-tick-labels {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0;
+    margin-bottom: 8px;
+  }
+  .speed-tick-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.5rem;
+    color: var(--accent);
+    letter-spacing: 0;
+    text-align: center;
+    width: 0;
+    white-space: nowrap;
+    transform: translateX(-50%);
+  }
+  .speed-tick-label.major {
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  .speed-tick-label:first-child {
+    transform: none;
+  }
+  .speed-tick-label:last-child {
+    transform: translateX(-100%);
+  }
+
+  /* 3パネル */
+  .panels {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 12px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+  }
+  .panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.2), transparent);
+  }
+
+  .panel-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.4rem;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+
+  /* 現在地 */
+  .loc-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.25;
+  }
+  .loc-loading {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--dim);
+    animation: blink 1.2s infinite;
+  }
+  @keyframes blink {
+    0%,100%{opacity:1} 50%{opacity:0.2}
+  }
+
+  /* 高度 */
+  .alt-panel::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle at top right, rgba(255,107,0,0.07), transparent 70%);
+  }
+  .alt-value {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent2);
+    text-shadow: var(--glow2);
+    letter-spacing: -0.02em;
+  }
+  .alt-unit {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--dim);
+    margin-top: 4px;
+    letter-spacing: 0.2em;
+  }
+
+  /* 方角 */
+  .heading-dir {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    text-align: center;
+    width: 100%;
+  }
+  .heading-deg {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-top: 6px;
+    text-align: center;
+    width: 100%;
+  }
+
+  /* フッター */
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 4px 2px;
+    flex: 0 0 auto;
+  }
+  .clock {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--dim);
+    letter-spacing: 0.15em;
+  }
+  .acc-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+  }
+  .osm-credit {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.5rem;
+    color: var(--dim);
+    text-align: center;
+    padding-bottom: 4px;
+    flex: 0 0 auto;
+  }
+
+  /* エラー */
+  .error-msg {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: #ff4466;
+    text-align: center;
+    padding: 2px 0;
+    display: none;
+    flex: 0 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">RIDE DASH</div>
+  <div class="status-row">
+    <div class="status-dot" id="gpsDot"></div>
+    <div class="status-label" id="gpsLabel">GPS...</div>
+  </div>
+</div>
+
+<div class="speed-bar-wrap">
+  <div class="speed-bar" id="speedBar"></div>
+  <div class="speed-ticks">
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+    <div class="speed-tick"></div>
+  </div>
+</div>
+<div class="speed-tick-labels">
+  <span class="speed-tick-label">0</span>
+  <span class="speed-tick-label">10</span>
+  <span class="speed-tick-label">20</span>
+  <span class="speed-tick-label">30</span>
+  <span class="speed-tick-label">40</span>
+  <span class="speed-tick-label major">50</span>
+  <span class="speed-tick-label">60</span>
+  <span class="speed-tick-label">70</span>
+  <span class="speed-tick-label">80</span>
+  <span class="speed-tick-label">90</span>
+  <span class="speed-tick-label major">100</span>
+  <span class="speed-tick-label">110</span>
+  <span class="speed-tick-label">120</span>
+</div>
+
+<div class="panels">
+
+  <div class="panel loc-panel">
+    <div class="panel-label">LOCATION</div>
+    <div class="loc-value" id="locVal">
+      <span class="loc-loading">取得中...</span>
+    </div>
+  </div>
+
+  <div class="panel alt-panel">
+    <div class="panel-label">ALTITUDE</div>
+    <div class="alt-value" id="altVal">--</div>
+    <div class="alt-unit">meters</div>
+  </div>
+
+  <div class="panel heading-panel">
+    <div class="panel-label">HEADING</div>
+    <div class="heading-dir" id="headingDir">--</div>
+    <div class="heading-deg" id="headingDeg">---°</div>
+  </div>
+
+</div>
+
+<div class="error-msg" id="errMsg"></div>
+
+<div class="footer">
+  <div class="clock" id="clock">--:--:--</div>
+  <div class="acc-label" id="accLabel"></div>
+</div>
+<div class="osm-credit">© OpenStreetMap contributors</div>
+
+<script>
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('ja-JP', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+function degToCompass(deg) {
+  const dirs = ['北','北北東','北東','東北東','東','東南東','南東','南南東','南','南南西','南西','西南西','西','西北西','北西','北北西'];
+  return dirs[Math.round(deg / 22.5) % 16];
+}
+
+let lastGeocode = 0;
+
+async function reverseGeocode(lat, lon) {
+  const now = Date.now();
+  if (now - lastGeocode < 15000) return;
+  lastGeocode = now;
+  try {
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=ja&zoom=13`;
+    const res = await fetch(url, { headers: { 'Accept-Language': 'ja' } });
+    const data = await res.json();
+    const addr = data.address || {};
+    const parts = [];
+    if (addr.country_code === 'jp') {
+      if (addr.state)        parts.push(addr.state);
+      if (addr.county)       parts.push(addr.county);
+      if (addr.city)         parts.push(addr.city);
+      else if (addr.town)    parts.push(addr.town);
+      else if (addr.village) parts.push(addr.village);
+      if (addr.suburb || addr.neighbourhood) parts.push(addr.suburb || addr.neighbourhood);
+    } else {
+      if (addr.state) parts.push(addr.state);
+      if (addr.city || addr.town || addr.village) parts.push(addr.city || addr.town || addr.village);
+    }
+    const locEl = document.getElementById('locVal');
+    if (parts.length > 0) {
+      locEl.innerHTML = parts.join('<br>');
+    } else {
+      locEl.textContent = data.display_name?.split(',').slice(0,3).join(' ') || '取得できませんでした';
+    }
+  } catch(e) {
+    document.getElementById('locVal').textContent = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+  }
+}
+
+const gpsDot   = document.getElementById('gpsDot');
+const gpsLabel = document.getElementById('gpsLabel');
+const errMsg   = document.getElementById('errMsg');
+
+function showError(msg) {
+  errMsg.style.display = 'block';
+  errMsg.textContent = msg;
+}
+
+if (!navigator.geolocation) {
+  showError('このブラウザはGeolocationに対応していません');
+} else {
+  navigator.geolocation.watchPosition(
+    (pos) => {
+      const { latitude, longitude, altitude, speed, heading, accuracy } = pos.coords;
+      gpsDot.classList.add('active');
+      gpsLabel.classList.add('active');
+      gpsLabel.textContent = 'GPS ON';
+      errMsg.style.display = 'none';
+
+      const speedKmh = speed != null ? Math.round(speed * 3.6) : 0;
+      document.getElementById('speedBar').style.width = Math.min(speedKmh / 120 * 100, 100) + '%';
+
+      document.getElementById('altVal').textContent = altitude != null ? Math.round(altitude) : '--';
+
+      if (heading != null && !isNaN(heading)) {
+        document.getElementById('headingDir').textContent = degToCompass(heading);
+        document.getElementById('headingDeg').textContent = Math.round(heading) + '°';
+      }
+
+      document.getElementById('accLabel').textContent = accuracy ? `±${Math.round(accuracy)}m` : '';
+      reverseGeocode(latitude, longitude);
+    },
+    (err) => {
+      gpsDot.classList.remove('active');
+      gpsLabel.classList.remove('active');
+      gpsLabel.textContent = 'GPS ERR';
+      const msgs = { 1: '位置情報の許可が必要です', 2: '位置情報を取得できません', 3: 'タイムアウト' };
+      showError(msgs[err.code] || '位置情報エラー');
+      document.getElementById('locVal').innerHTML = '<span class="loc-loading">許可待ち...</span>';
+    },
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 2000 }
+  );
+}
+
+function startCompass() {
+  if (typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function') {
+    document.addEventListener('click', async () => {
+      try {
+        const perm = await DeviceOrientationEvent.requestPermission();
+        if (perm === 'granted') listenOrientation();
+      } catch(e) {}
+    }, { once: true });
+  } else if (window.DeviceOrientationEvent) {
+    listenOrientation();
+  }
+}
+
+function listenOrientation() {
+  window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+  window.addEventListener('deviceorientation', handleOrientation, true);
+}
+
+function handleOrientation(e) {
+  let deg = null;
+  if (e.absolute && e.alpha != null) {
+    deg = 360 - e.alpha;
+  } else if (e.webkitCompassHeading != null) {
+    deg = e.webkitCompassHeading;
+  }
+  if (deg == null) return;
+  deg = (deg + 360) % 360;
+  document.getElementById('headingDir').textContent = degToCompass(deg);
+  document.getElementById('headingDeg').textContent = Math.round(deg) + '°';
+}
+
+startCompass();
+</script>
+</body>
+</html>
